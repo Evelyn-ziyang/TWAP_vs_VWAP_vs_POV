@@ -1,0 +1,33 @@
+# macOS and editor artifacts
+.DS_Store
+.idea/
+.vscode/
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Local secrets
+.env
+.env.*
+
+# LaTeX build artifacts
+.texpadtmp/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.xdv
+
+# Local scratch files
+tmp/

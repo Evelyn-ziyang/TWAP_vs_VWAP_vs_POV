@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="700" viewBox="0 0 1300 700">
+<title>Dynamic-Q completion rate</title>
+<desc>Mean completion rate for TWAP, Forecast VWAP, and POV across normalized AAPL rolling windows.</desc>
+<rect width="1300" height="700" fill="#FFFFFF"/>
+<text x="65.00" y="42.00" fill="#263238" font-family="Arial, sans-serif" font-size="40" font-weight="700" text-anchor="start" dominant-baseline="hanging">Dynamic-Q completion rate</text>
+<text x="67.00" y="95.00" fill="#66727A" font-family="Arial, sans-serif" font-size="21" font-weight="400" text-anchor="start" dominant-baseline="hanging">AAPL • 115 overlapping 60-minute windows • Q = 3% of realized window volume</text>
+<line x1="135.00" y1="565.00" x2="1235.00" y2="565.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="121.00" y="565.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">0%</text>
+<line x1="135.00" y1="463.75" x2="1235.00" y2="463.75" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="121.00" y="463.75" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">25%</text>
+<line x1="135.00" y1="362.50" x2="1235.00" y2="362.50" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="121.00" y="362.50" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">50%</text>
+<line x1="135.00" y1="261.25" x2="1235.00" y2="261.25" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="121.00" y="261.25" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">75%</text>
+<line x1="135.00" y1="160.00" x2="1235.00" y2="160.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="121.00" y="160.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">100%</text>
+<rect x="240.00" y="160.00" width="180.00" height="405.00" fill="#4C78A8"/>
+<text x="330.00" y="142.00" fill="#263238" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle" dominant-baseline="text-after-edge">100.0%</text>
+<text x="330.00" y="589.00" fill="#263238" font-family="Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="hanging">TWAP</text>
+<rect x="595.00" y="160.00" width="180.00" height="405.00" fill="#F58518"/>
+<text x="685.00" y="142.00" fill="#263238" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle" dominant-baseline="text-after-edge">100.0%</text>
+<text x="685.00" y="589.00" fill="#263238" font-family="Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="hanging">Forecast VWAP</text>
+<rect x="950.00" y="160.00" width="180.00" height="405.00" fill="#54A24B"/>
+<text x="1040.00" y="142.00" fill="#263238" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle" dominant-baseline="text-after-edge">100.0%</text>
+<text x="1040.00" y="589.00" fill="#263238" font-family="Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="hanging">POV</text>
+<text x="65.00" y="652.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="start" dominant-baseline="hanging">All algorithms completed every normalized window; ΔIS comparisons are therefore not driven by unequal completion.</text>
+</svg>

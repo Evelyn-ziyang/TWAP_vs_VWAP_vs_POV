@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760">
+<title>Implementation-shortfall differences</title>
+<desc>Rolling-window distributions of Forecast VWAP minus TWAP and POV minus TWAP implementation shortfall in basis points.</desc>
+<rect width="1600" height="760" fill="#FFFFFF"/>
+<text x="70.00" y="42.00" fill="#263238" font-family="Arial, sans-serif" font-size="42" font-weight="700" text-anchor="start" dominant-baseline="hanging">Implementation-shortfall difference distributions</text>
+<text x="72.00" y="97.00" fill="#66727A" font-family="Arial, sans-serif" font-size="21" font-weight="400" text-anchor="start" dominant-baseline="hanging">AAPL • 115 overlapping 60-minute windows • Q = 3% of each window&#x27;s realized volume</text>
+<text x="95.00" y="142.00" fill="#263238" font-family="Arial, sans-serif" font-size="25" font-weight="700" text-anchor="start" dominant-baseline="hanging">Forecast VWAP − TWAP</text>
+<line x1="95.00" y1="655.00" x2="770.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="83.00" y="655.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">0</text>
+<line x1="95.00" y1="420.00" x2="770.00" y2="420.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="83.00" y="420.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">32</text>
+<line x1="95.00" y1="185.00" x2="770.00" y2="185.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="83.00" y="185.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">65</text>
+<line x1="95.00" y1="185.00" x2="95.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="95.00" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">-100</text>
+<line x1="263.75" y1="185.00" x2="263.75" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="263.75" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">-50</text>
+<line x1="432.50" y1="185.00" x2="432.50" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="432.50" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="601.25" y1="185.00" x2="601.25" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="601.25" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">50</text>
+<line x1="770.00" y1="185.00" x2="770.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="770.00" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">100</text>
+<line x1="95.00" y1="185.00" x2="95.00" y2="655.00" stroke="#66727A" stroke-width="2" stroke-linecap="round"/>
+<line x1="95.00" y1="655.00" x2="770.00" y2="655.00" stroke="#66727A" stroke-width="2" stroke-linecap="round"/>
+<rect x="96.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="114.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="133.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="152.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="171.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="189.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="208.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="227.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="246.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="264.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="283.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="302.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="321.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="339.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="358.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="377.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="396.00" y="647.77" width="16.75" height="7.23" fill="#4F8F5B"/>
+<rect x="414.75" y="185.00" width="16.75" height="470.00" fill="#4F8F5B"/>
+<rect x="433.50" y="307.92" width="16.75" height="347.08" fill="#C65B4B"/>
+<rect x="452.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="471.00" y="647.77" width="16.75" height="7.23" fill="#C65B4B"/>
+<rect x="489.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="508.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="527.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="546.00" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="564.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="583.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="602.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="621.00" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="639.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="658.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="677.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="696.00" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="714.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="733.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="752.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<line x1="432.50" y1="185.00" x2="432.50" y2="655.00" stroke="#263238" stroke-width="2" stroke-linecap="round" stroke-dasharray="8 6"/>
+<line x1="432.57" y1="185.00" x2="432.57" y2="655.00" stroke="#F58518" stroke-width="4" stroke-linecap="round"/>
+<text x="113.00" y="203.00" fill="#263238" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="start" dominant-baseline="hanging">Mean ΔIS +0.02 bps</text>
+<text x="113.00" y="233.00" fill="#4F8F5B" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="start" dominant-baseline="hanging">Win rate 57.4%</text>
+<text x="890.00" y="142.00" fill="#263238" font-family="Arial, sans-serif" font-size="25" font-weight="700" text-anchor="start" dominant-baseline="hanging">POV − TWAP</text>
+<line x1="890.00" y1="655.00" x2="1565.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="878.00" y="655.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">0</text>
+<line x1="890.00" y1="420.00" x2="1565.00" y2="420.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="878.00" y="420.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">32</text>
+<line x1="890.00" y1="185.00" x2="1565.00" y2="185.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="878.00" y="185.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="end" dominant-baseline="middle">65</text>
+<line x1="890.00" y1="185.00" x2="890.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="890.00" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">-100</text>
+<line x1="1058.75" y1="185.00" x2="1058.75" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="1058.75" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">-50</text>
+<line x1="1227.50" y1="185.00" x2="1227.50" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="1227.50" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">0</text>
+<line x1="1396.25" y1="185.00" x2="1396.25" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="1396.25" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">50</text>
+<line x1="1565.00" y1="185.00" x2="1565.00" y2="655.00" stroke="#DFE5E8" stroke-width="2" stroke-linecap="round"/>
+<text x="1565.00" y="671.00" fill="#66727A" font-family="Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle" dominant-baseline="hanging">100</text>
+<line x1="890.00" y1="185.00" x2="890.00" y2="655.00" stroke="#66727A" stroke-width="2" stroke-linecap="round"/>
+<line x1="890.00" y1="655.00" x2="1565.00" y2="655.00" stroke="#66727A" stroke-width="2" stroke-linecap="round"/>
+<rect x="891.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="909.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="928.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="947.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="966.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="984.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="1003.50" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="1022.25" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="1041.00" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="1059.75" y="655.00" width="16.75" height="0.00" fill="#4F8F5B"/>
+<rect x="1078.50" y="647.77" width="16.75" height="7.23" fill="#4F8F5B"/>
+<rect x="1097.25" y="640.54" width="16.75" height="14.46" fill="#4F8F5B"/>
+<rect x="1116.00" y="633.31" width="16.75" height="21.69" fill="#4F8F5B"/>
+<rect x="1134.75" y="633.31" width="16.75" height="21.69" fill="#4F8F5B"/>
+<rect x="1153.50" y="582.69" width="16.75" height="72.31" fill="#4F8F5B"/>
+<rect x="1172.25" y="589.92" width="16.75" height="65.08" fill="#4F8F5B"/>
+<rect x="1191.00" y="589.92" width="16.75" height="65.08" fill="#4F8F5B"/>
+<rect x="1209.75" y="495.92" width="16.75" height="159.08" fill="#4F8F5B"/>
+<rect x="1228.50" y="561.00" width="16.75" height="94.00" fill="#C65B4B"/>
+<rect x="1247.25" y="546.54" width="16.75" height="108.46" fill="#C65B4B"/>
+<rect x="1266.00" y="582.69" width="16.75" height="72.31" fill="#C65B4B"/>
+<rect x="1284.75" y="604.38" width="16.75" height="50.62" fill="#C65B4B"/>
+<rect x="1303.50" y="626.08" width="16.75" height="28.92" fill="#C65B4B"/>
+<rect x="1322.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1341.00" y="618.85" width="16.75" height="36.15" fill="#C65B4B"/>
+<rect x="1359.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1378.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1397.25" y="647.77" width="16.75" height="7.23" fill="#C65B4B"/>
+<rect x="1416.00" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1434.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1453.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1472.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1491.00" y="647.77" width="16.75" height="7.23" fill="#C65B4B"/>
+<rect x="1509.75" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1528.50" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<rect x="1547.25" y="655.00" width="16.75" height="0.00" fill="#C65B4B"/>
+<line x1="1227.50" y1="185.00" x2="1227.50" y2="655.00" stroke="#263238" stroke-width="2" stroke-linecap="round" stroke-dasharray="8 6"/>
+<line x1="1230.33" y1="185.00" x2="1230.33" y2="655.00" stroke="#54A24B" stroke-width="4" stroke-linecap="round"/>
+<text x="908.00" y="203.00" fill="#263238" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="start" dominant-baseline="hanging">Mean ΔIS +0.84 bps</text>
+<text x="908.00" y="233.00" fill="#4F8F5B" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="start" dominant-baseline="hanging">Win rate 51.3%</text>
+<text x="800.00" y="718.00" fill="#66727A" font-family="Arial, sans-serif" font-size="18" font-weight="400" text-anchor="middle" dominant-baseline="hanging">ΔIS (basis points per executed share)</text>
+</svg>
