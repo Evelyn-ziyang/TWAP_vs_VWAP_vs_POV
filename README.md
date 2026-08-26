@@ -169,7 +169,7 @@ TWAP 与 Forecast VWAP 的箱体高度重叠，再次说明 Forecast VWAP 在当
 4. 成交模型使用 5-minute bar typical price、固定 half-spread、平方根 impact 和 fee，未模拟 order book、queue、venue、partial fill 与 adverse selection。
 5. Dynamic-Q 的 realized window volume 是 ex-post normalization。生产环境应改用预先给定母订单、ADV 或 forecast window volume。
 
-## 7. Reproduce
+<!--## 7. Reproduce
 
 项目主体只依赖 Python 3.10+ 标准库；生成图需要 Pillow，测试需要 pytest。
 
@@ -182,9 +182,9 @@ python figures/generate_readme_figures.py
 
 # 运行测试
 python -m pytest -q
-```
+```-->
 
-关键输出：
+<!--关键输出：
 
 - [`review_v2.md`](review_v2.md)：更完整的 Review v2 汇报稿；
 - [`review_v2_report.tex`](review_v2_report.tex)：A4 研报版 LaTeX 源文件；
@@ -192,4 +192,4 @@ python -m pytest -q
 - [`figures/readme/full_day_summary.csv`](figures/readme/full_day_summary.csv)：Full-day 结果；
 - [`figures/readme/dynamic_q_summary.csv`](figures/readme/dynamic_q_summary.csv)：Dynamic-Q 总体结果；
 - [`figures/readme/dynamic_q_regime_summary.csv`](figures/readme/dynamic_q_regime_summary.csv)：regime 结果；
-- [`figures/readme/rolling_window_results.csv`](figures/readme/rolling_window_results.csv)：115 个窗口的底层明细。
+- [`figures/readme/rolling_window_results.csv`](figures/readme/rolling_window_results.csv)：115 个窗口的底层明细。-->
