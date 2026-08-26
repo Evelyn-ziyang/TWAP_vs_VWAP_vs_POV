@@ -4,8 +4,6 @@
 
 本项目比较三种常见母订单拆分算法：**TWAP** 按时间均匀执行，**Forecast VWAP** 按交易前预测的日内成交量曲线执行，**POV** 则随已观察到的市场成交量动态执行。研究问题不是寻找一个永远最优的算法，而是说明：在相同订单与约束下，三种方法的执行路径、完成时点、成本分布和 regime 敏感性有何不同。
 
-图表编排参考 [`twap-vs-vwap-2026`](https://github.com/alicelmre2705/twap-vs-vwap-2026) 的 README；本仓库加入 POV，并使用本地可复现数据和统一成交模型重新计算全部结果。
-
 ## 1. Data
 
 | 项目 | 本项目设置 |
@@ -15,7 +13,7 @@
 | 日内范围 | 09:30–16:00 ET，78 bars/day，共 468 bars |
 | Full-day 测试 | 前 5 日估计 VWAP profile；最后 1 日（2026-07-31）测试 |
 | Dynamic-Q 测试 | 2026-07-27 至 2026-07-31；每个测试日只使用此前交易日估计 profile |
-| 数据文件 | [`Data_example/example.pkl`](Data_example/example.pkl)，可由 [`AAPL_5m_source.csv`](Data_example/AAPL_5m_source.csv) 离线重建 |
+<!--| 数据文件 | [`Data_example/example.pkl`](Data_example/example.pkl)，可由 [`AAPL_5m_source.csv`](Data_example/AAPL_5m_source.csv) 离线重建 |-->
 
 选择 5 分钟 bar，是为了在日内成交量形状和 bar-level 噪声之间折中。需要强调：当前公开 fixture 的 `volume` 是数据商定义的 **tick volume**，不是 consolidated share volume。因此这些结果适合比较算法逻辑，但 POV participation 和 impact 数值不应被解释成生产级股票成交量估计。
 
