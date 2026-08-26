@@ -42,6 +42,7 @@ def parse_args() -> argparse.Namespace:
         help="Yahoo chart lookback; 3mo is filtered to the latest 60 complete sessions",
     )
     parser.add_argument("--sessions", type=int, default=60)
+    parser.add_argument("--retries", type=int, default=3)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     return parser.parse_args()
 
@@ -52,6 +53,7 @@ def fetch_universe(
     interval: str,
     range_: str,
     sessions: int,
+    retries: int = 3,
 ) -> list[tuple[str, dict[str, Any]]]:
     """Download every symbol before writing anything, avoiding partial refreshes."""
     if sessions < 2:
@@ -64,7 +66,7 @@ def fetch_universe(
 
     downloaded: list[tuple[str, dict[str, Any]]] = []
     for symbol in normalized:
-        records, source_url = download_yahoo(symbol, interval, range_)
+        records, source_url = download_yahoo(symbol, interval, range_, retries=retries)
         dataset = build_dataset(
             records,
             symbol=symbol,
@@ -110,6 +112,7 @@ def main() -> int:
         interval=args.interval,
         range_=args.range_,
         sessions=args.sessions,
+        retries=args.retries,
     )
     manifest_path = save_universe(datasets, args.output_dir)
     for symbol, dataset in datasets:

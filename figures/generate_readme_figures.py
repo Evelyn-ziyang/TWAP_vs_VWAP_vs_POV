@@ -58,6 +58,8 @@ SERIES = {
     "POV": POV_COLOR,
 }
 ORDER_FRACTION = 0.03
+PROFILE_LOOKBACK_SESSIONS = 5
+COMPLETION_ORDER_FRACTIONS = (0.03, 0.05, 0.10, 0.15)
 
 
 @dataclass(frozen=True)
@@ -67,6 +69,8 @@ class WindowObservation:
     end_slot: str
     volume: float
     target_qty: int
+    order_fraction: float
+    training_sessions: int
     realized_volatility: float
     twap_is_bps: float
     vwap_is_bps: float
@@ -260,24 +264,39 @@ def cumulative(values: Sequence[int]) -> list[int]:
     return output
 
 
-def rolling_window_observations() -> list[WindowObservation]:
+def rolling_window_observations(
+    *,
+    window_bars: int = 12,
+    step_bars: int = 3,
+    profile_lookback_sessions: int = PROFILE_LOOKBACK_SESSIONS,
+    order_fraction: float = ORDER_FRACTION,
+) -> list[WindowObservation]:
+    """Run fixed-lookback, out-of-sample rolling windows.
+
+    Every test session uses exactly ``profile_lookback_sessions`` prior
+    sessions.  This avoids pooling strategies trained on heterogeneous amounts
+    of history.  ``step_bars=12`` provides a non-overlapping robustness sample.
+    """
+    if window_bars <= 0 or step_bars <= 0 or profile_lookback_sessions <= 0:
+        raise ValueError("window, step, and profile lookback must be positive")
     dataset = load_dataset(ROOT / "Data_example" / "example.pkl")
     by_session = group_sessions(dataset["records"])
     session_names = sorted(by_session)
     observations: list[WindowObservation] = []
-    window_bars = 12
-    step = 3
-    for test_index in range(1, len(session_names)):
+    for test_index in range(profile_lookback_sessions, len(session_names)):
         current_session = session_names[test_index]
+        training_session_names = session_names[
+            test_index - profile_lookback_sessions : test_index
+        ]
         training = [
             bar
-            for session in session_names[:test_index]
+            for session in training_session_names
             for bar in by_session[session]
         ]
         session_bars = by_session[current_session]
-        for start in range(0, len(session_bars) - window_bars + 1, step):
+        for start in range(0, len(session_bars) - window_bars + 1, step_bars):
             bars = session_bars[start : start + window_bars]
-            config = dynamic_window_config(bars)
+            config = dynamic_window_config(bars, order_fraction=order_fraction)
             schedules = schedules_for_bars(training, bars, config)
             results = results_for_bars(bars, schedules, config)
             closes = [float(bar["close"]) for bar in bars]
@@ -289,6 +308,8 @@ def rolling_window_observations() -> list[WindowObservation]:
                     end_slot=str(bars[-1]["slot"]),
                     volume=sum(float(bar["volume"]) for bar in bars),
                     target_qty=config.total_qty,
+                    order_fraction=order_fraction,
+                    training_sessions=len(training_session_names),
                     realized_volatility=pstdev(returns) if len(returns) > 1 else 0.0,
                     twap_is_bps=results["TWAP"].arrival_shortfall_bps,
                     vwap_is_bps=results["Forecast VWAP"].arrival_shortfall_bps,
@@ -305,7 +326,7 @@ def write_observations(observations: Sequence[WindowObservation]) -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     output = OUT_DIR / "rolling_window_results.csv"
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "session",
@@ -314,6 +335,7 @@ def write_observations(observations: Sequence[WindowObservation]) -> Path:
                 "window_volume",
                 "target_qty",
                 "order_fraction",
+                "training_sessions",
                 "realized_volatility",
                 "twap_is_bps",
                 "forecast_vwap_is_bps",
@@ -333,7 +355,8 @@ def write_observations(observations: Sequence[WindowObservation]) -> Path:
                     obs.end_slot,
                     f"{obs.volume:.6f}",
                     str(obs.target_qty),
-                    f"{ORDER_FRACTION:.6f}",
+                    f"{obs.order_fraction:.6f}",
+                    str(obs.training_sessions),
                     f"{obs.realized_volatility:.10f}",
                     f"{obs.twap_is_bps:.6f}",
                     f"{obs.vwap_is_bps:.6f}",
@@ -783,7 +806,7 @@ def interpolate_color(low: str, high: str, t: float) -> str:
 def regime_cells(
     observations: Sequence[WindowObservation],
     delta_attr: str,
-) -> tuple[list[list[float]], list[list[float]], int]:
+) -> tuple[list[list[float]], list[list[float]], list[list[int]]]:
     volume_med = median(obs.volume for obs in observations)
     volatility_med = median(obs.realized_volatility for obs in observations)
     cells: list[list[list[WindowObservation]]] = [[[], []], [[], []]]
@@ -793,18 +816,21 @@ def regime_cells(
         cells[row][col].append(obs)
     means = [[0.0, 0.0], [0.0, 0.0]]
     rates = [[0.0, 0.0], [0.0, 0.0]]
+    counts = [[0, 0], [0, 0]]
     for row in range(2):
         for col in range(2):
             values = [float(getattr(obs, delta_attr)) for obs in cells[row][col]]
+            counts[row][col] = len(values)
             means[row][col] = fmean(values) if values else math.nan
             rates[row][col] = sum(value < 0 for value in values) / len(values) if values else math.nan
-    return means, rates, len(observations)
+    return means, rates, counts
 
 
 def draw_heatmap(
     canvas: Canvas,
     box: tuple[float, float, float, float],
     matrix: Sequence[Sequence[float]],
+    counts: Sequence[Sequence[int]],
     *,
     title: str,
     value_type: str,
@@ -840,7 +866,15 @@ def draw_heatmap(
             top = y0 + row * cell_h
             left = x0 + col * cell_w
             canvas.rect((left, top, left + cell_w, top + cell_h), fill=color, outline=BACKGROUND, width=4)
-            canvas.text(left + cell_w / 2, top + cell_h / 2, label, 24, bold=True, anchor="mm")
+            canvas.text(left + cell_w / 2, top + cell_h / 2 - 12, label, 24, bold=True, anchor="mm")
+            canvas.text(
+                left + cell_w / 2,
+                top + cell_h / 2 + 24,
+                f"n = {counts[row][col]}",
+                16,
+                fill=MUTED,
+                anchor="mm",
+            )
     canvas.text(x0 + cell_w / 2, y1 + 16, "Low vol", 17, fill=MUTED, anchor="mt")
     canvas.text(x0 + 1.5 * cell_w, y1 + 16, "High vol", 17, fill=MUTED, anchor="mt")
     canvas.text(x0 - 16, y0 + cell_h / 2, "Low volume", 17, fill=MUTED, anchor="rm")
@@ -848,8 +882,8 @@ def draw_heatmap(
 
 
 def render_regime_heatmap(observations: Sequence[WindowObservation]) -> tuple[Path, Path]:
-    vwap_means, vwap_rates, _ = regime_cells(observations, "vwap_delta_bps")
-    pov_means, pov_rates, _ = regime_cells(observations, "pov_delta_bps")
+    vwap_means, vwap_rates, vwap_counts = regime_cells(observations, "vwap_delta_bps")
+    pov_means, pov_rates, pov_counts = regime_cells(observations, "pov_delta_bps")
     finite_means = [
         abs(value)
         for matrix in (vwap_means, pov_means)
@@ -866,10 +900,10 @@ def render_regime_heatmap(observations: Sequence[WindowObservation]) -> tuple[Pa
     )
     canvas.text(70, 42, "Regime analysis: volume × realized volatility", 42, bold=True)
     canvas.text(72, 97, f"AAPL • {len(observations)} overlapping 60-minute windows • Q = {ORDER_FRACTION:.0%} of realized window volume • median splits", 21, fill=MUTED)
-    draw_heatmap(canvas, (190, 215, 780, 485), vwap_means, title="Mean ΔIS vs TWAP", value_type="delta", scale=scale)
-    draw_heatmap(canvas, (945, 215, 1535, 485), vwap_rates, title="Win rate vs TWAP", value_type="rate", scale=1)
-    draw_heatmap(canvas, (190, 655, 780, 925), pov_means, title="Mean ΔIS vs TWAP", value_type="delta", scale=scale)
-    draw_heatmap(canvas, (945, 655, 1535, 925), pov_rates, title="Win rate vs TWAP", value_type="rate", scale=1)
+    draw_heatmap(canvas, (190, 215, 780, 485), vwap_means, vwap_counts, title="Mean ΔIS vs TWAP", value_type="delta", scale=scale)
+    draw_heatmap(canvas, (945, 215, 1535, 485), vwap_rates, vwap_counts, title="Win rate vs TWAP", value_type="rate", scale=1)
+    draw_heatmap(canvas, (190, 655, 780, 925), pov_means, pov_counts, title="Mean ΔIS vs TWAP", value_type="delta", scale=scale)
+    draw_heatmap(canvas, (945, 655, 1535, 925), pov_rates, pov_counts, title="Win rate vs TWAP", value_type="rate", scale=1)
     canvas.text(45, 320, "Forecast", 23, bold=True)
     canvas.text(45, 350, "VWAP", 23, bold=True)
     canvas.text(45, 777, "POV", 24, bold=True)
@@ -946,66 +980,111 @@ def render_is_boxplots(observations: Sequence[WindowObservation]) -> tuple[Path,
         )
         canvas.text(center, y1 + 22, name, 20, bold=True, anchor="mt")
         canvas.text(center, y1 + 56, f"mean {mean:+.1f} bps", 17, fill=MUTED, anchor="mt")
-    canvas.text(65, 780, "Whiskers use 1.5×IQR; outliers are hidden. All three algorithms completed 100% in these normalized windows.", 17, fill=MUTED)
+    canvas.text(65, 780, "Whiskers use 1.5×IQR; outliers are hidden. Completion sensitivity is reported separately in Figure 5.", 17, fill=MUTED)
     return canvas.save("04_is_distribution_by_algorithm")
 
 
-def render_completion_rate(observations: Sequence[WindowObservation]) -> tuple[Path, Path]:
-    completion = {
-        "TWAP": [obs.twap_fill for obs in observations],
-        "Forecast VWAP": [obs.vwap_fill for obs in observations],
-        "POV": [obs.pov_fill for obs in observations],
-    }
-    means = {name: fmean(values) for name, values in completion.items()}
+def completion_sensitivity(
+    base_observations: Sequence[WindowObservation],
+) -> dict[float, list[WindowObservation]]:
+    samples: dict[float, list[WindowObservation]] = {ORDER_FRACTION: list(base_observations)}
+    for order_fraction in COMPLETION_ORDER_FRACTIONS:
+        if order_fraction not in samples:
+            samples[order_fraction] = rolling_window_observations(order_fraction=order_fraction)
+    return samples
+
+
+def render_completion_rate(
+    samples: dict[float, list[WindowObservation]],
+) -> tuple[Path, Path]:
+    means: dict[float, dict[str, float]] = {}
+    for order_fraction, observations in samples.items():
+        means[order_fraction] = {
+            "TWAP": fmean(obs.twap_fill for obs in observations),
+            "Forecast VWAP": fmean(obs.vwap_fill for obs in observations),
+            "POV": fmean(obs.pov_fill for obs in observations),
+        }
     canvas = Canvas(
-        1300,
-        700,
-        "Dynamic-Q completion rate",
-        "Mean completion rate for TWAP, Forecast VWAP, and POV across normalized AAPL rolling windows.",
+        1600,
+        820,
+        "Completion sensitivity by order fraction",
+        "Mean completion rates across four research-normalized order fractions using a lagged, bar-causal POV schedule.",
     )
-    canvas.text(65, 42, "Dynamic-Q completion rate", 40, bold=True)
+    canvas.text(65, 42, "Completion sensitivity by order fraction", 40, bold=True)
     canvas.text(
         67,
         95,
-        f"AAPL • {len(observations)} overlapping 60-minute windows • Q = {ORDER_FRACTION:.0%} of realized window volume",
+        f"AAPL • fixed {PROFILE_LOOKBACK_SESSIONS}-session profile • 60-minute windows • lagged POV • research-normalized Q",
         21,
         fill=MUTED,
     )
-    box = (135, 160, 1235, 565)
+    box = (135, 180, 1535, 645)
     x0, y0, x1, y1 = box
     to_y = lambda value: y1 - value * (y1 - y0)
     for tick in (0.0, 0.25, 0.50, 0.75, 1.0):
         yy = to_y(tick)
         canvas.line(((x0, yy), (x1, yy)), fill=GRID, width=2)
         canvas.text(x0 - 14, yy, f"{tick:.0%}", 17, fill=MUTED, anchor="rm")
-    centers = [330, 685, 1040]
-    bar_width = 180
-    for center, name in zip(centers, SERIES):
-        value = means[name]
-        canvas.rect((center - bar_width / 2, to_y(value), center + bar_width / 2, y1), fill=SERIES[name])
-        canvas.text(center, to_y(value) - 18, f"{value:.1%}", 22, bold=True, anchor="mb")
-        canvas.text(center, y1 + 24, name, 20, bold=True, anchor="mt")
+    fractions = sorted(samples)
+    group_centers = [300, 650, 1000, 1350]
+    offsets = {"TWAP": -78, "Forecast VWAP": 0, "POV": 78}
+    bar_width = 64
+    for group_center, order_fraction in zip(group_centers, fractions):
+        for name in SERIES:
+            center = group_center + offsets[name]
+            value = means[order_fraction][name]
+            canvas.rect((center - bar_width / 2, to_y(value), center + bar_width / 2, y1), fill=SERIES[name])
+            canvas.text(center, to_y(value) - 10, f"{value:.0%}", 16, bold=True, anchor="mb")
+        canvas.text(group_center, y1 + 24, f"Q = {order_fraction:.0%} of window volume", 19, bold=True, anchor="mt")
+    series_legend(canvas, 430, 710, compact=True)
     canvas.text(
         65,
-        652,
-        "All algorithms completed every normalized window; ΔIS comparisons are therefore not driven by unequal completion.",
+        775,
+        "The 3% comparison controls fill ratio; larger fractions expose cap- and participation-driven completion risk.",
         17,
         fill=MUTED,
     )
     return canvas.save("05_completion_rate")
 
 
+def write_completion_sensitivity(samples: dict[float, list[WindowObservation]]) -> Path:
+    output = OUT_DIR / "completion_sensitivity.csv"
+    with output.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle, lineterminator="\n")
+        writer.writerow(["order_fraction", "algorithm", "windows", "mean_completion_rate", "min_completion_rate"])
+        for order_fraction in sorted(samples):
+            observations = samples[order_fraction]
+            series = {
+                "TWAP": [obs.twap_fill for obs in observations],
+                "Forecast VWAP": [obs.vwap_fill for obs in observations],
+                "POV": [obs.pov_fill for obs in observations],
+            }
+            for name, values in series.items():
+                writer.writerow(
+                    [
+                        f"{order_fraction:.6f}",
+                        name,
+                        len(values),
+                        f"{fmean(values):.8f}",
+                        f"{min(values):.8f}",
+                    ]
+                )
+    return output
+
+
 def write_full_day_summary(results: dict[str, BacktestResult]) -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     output = OUT_DIR / "full_day_summary.csv"
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "algorithm",
                 "completion_rate",
                 "executed_qty",
                 "average_execution_price",
+                "arrival_price_shortfall_bps",
+                "vwap_price_slippage_bps",
                 "arrival_shortfall_bps",
                 "vwap_slippage_bps",
                 "spread_cost",
@@ -1022,6 +1101,8 @@ def write_full_day_summary(results: dict[str, BacktestResult]) -> Path:
                     f"{result.completion_rate:.8f}",
                     result.executed_qty,
                     f"{result.average_execution_price:.8f}",
+                    f"{result.arrival_price_shortfall_bps:.8f}",
+                    f"{result.vwap_price_slippage_bps:.8f}",
                     f"{result.arrival_shortfall_bps:.8f}",
                     f"{result.vwap_slippage_bps:.8f}",
                     f"{result.spread_cost:.8f}",
@@ -1033,8 +1114,11 @@ def write_full_day_summary(results: dict[str, BacktestResult]) -> Path:
     return output
 
 
-def write_dynamic_summary(observations: Sequence[WindowObservation]) -> Path:
-    output = OUT_DIR / "dynamic_q_summary.csv"
+def write_dynamic_summary(
+    observations: Sequence[WindowObservation],
+    filename: str = "dynamic_q_summary.csv",
+) -> Path:
+    output = OUT_DIR / filename
     rows = {
         "TWAP": {
             "is": [obs.twap_is_bps for obs in observations],
@@ -1053,7 +1137,7 @@ def write_dynamic_summary(observations: Sequence[WindowObservation]) -> Path:
         },
     }
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "algorithm",
@@ -1097,7 +1181,7 @@ def write_regime_summary(observations: Sequence[WindowObservation]) -> Path:
         "POV": ("pov_delta_bps", "pov_fill"),
     }
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "algorithm",
@@ -1140,6 +1224,8 @@ def write_regime_summary(observations: Sequence[WindowObservation]) -> Path:
 
 def main() -> int:
     observations = rolling_window_observations()
+    nonoverlapping_observations = rolling_window_observations(step_bars=12)
+    sensitivity = completion_sensitivity(observations)
     full_day_png, full_day_svg, full_day_results = render_full_day_case_study()
     outputs = [
         full_day_png,
@@ -1149,10 +1235,15 @@ def main() -> int:
         *render_delta_histograms(observations),
         *render_regime_heatmap(observations),
         *render_is_boxplots(observations),
-        *render_completion_rate(observations),
+        *render_completion_rate(sensitivity),
         write_observations(observations),
         write_dynamic_summary(observations),
+        write_dynamic_summary(
+            nonoverlapping_observations,
+            "dynamic_q_nonoverlap_summary.csv",
+        ),
         write_regime_summary(observations),
+        write_completion_sensitivity(sensitivity),
     ]
     for path in outputs:
         print(f"wrote {path}")

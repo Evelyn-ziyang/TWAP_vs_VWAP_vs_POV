@@ -102,6 +102,8 @@ class BacktestResult:
     average_execution_price: float
     arrival_price: float
     market_vwap: float
+    arrival_price_shortfall_bps: float
+    vwap_price_slippage_bps: float
     arrival_shortfall_bps: float
     vwap_slippage_bps: float
     spread_cost: float
@@ -183,27 +185,36 @@ def pov(
     market_volumes: Sequence[float],
     participation_rate: float,
     lot_size: int = 1,
+    lag_bars: int = 1,
 ) -> list[int]:
-    """Generate an online-style percent-of-volume schedule.
+    """Generate a bar-causal percent-of-volume schedule.
 
-    ``market_volumes`` is treated as exogenous printed volume.  Each bucket is
-    capped at ``floor(volume * participation_rate / lot_size) * lot_size`` and
-    the order stops after reaching ``total_qty``.  It may therefore finish with
-    residual quantity when market volume is insufficient.
+    At the default ``lag_bars=1``, bucket ``i`` may only use volume observed
+    through bucket ``i-1``.  This avoids using a bar's completed volume to make
+    a decision inside that same bar.  ``lag_bars=0`` is available only as an
+    explicitly non-causal diagnostic.  The order stops after reaching
+    ``total_qty`` and may finish with residual quantity.
     """
     _validate_quantity(total_qty)
     _validate_lot_size(total_qty, lot_size)
     if not math.isfinite(float(participation_rate)) or not 0 < participation_rate <= 1:
         raise ValueError("participation_rate must be finite and in (0, 1]")
+    if isinstance(lag_bars, bool) or not isinstance(lag_bars, int) or lag_bars < 0:
+        raise ValueError("lag_bars must be a non-negative integer")
     parsed_volumes = [float(volume) for volume in market_volumes]
     if not parsed_volumes:
         raise ValueError("market_volumes must not be empty")
     if any(not math.isfinite(volume) or volume < 0 for volume in parsed_volumes):
         raise ValueError("market volumes must be finite and non-negative")
 
+    if lag_bars:
+        decision_volumes = [0.0] * lag_bars + parsed_volumes[:-lag_bars]
+    else:
+        decision_volumes = parsed_volumes
+
     remaining = total_qty
     schedule: list[int] = []
-    for volume in parsed_volumes:
+    for volume in decision_volumes:
         capacity = math.floor(volume * participation_rate / lot_size) * lot_size
         quantity = min(capacity, remaining)
         schedule.append(quantity)
@@ -238,19 +249,54 @@ def _validated_record(original: Mapping[str, Any]) -> dict[str, Any]:
     if prices["low"] > min(prices["open"], prices["close"]):
         raise ValueError("low is above open/close")
     local = stamp.astimezone(EXCHANGE_TZ)
-    return {
+    validated = {
         "timestamp": stamp.isoformat(),
         **prices,
         "volume": volume,
         "session": str(original.get("session") or local.date().isoformat()),
         "slot": str(original.get("slot") or local.strftime("%H:%M")),
     }
+    if "bar_vwap" in original:
+        bar_vwap = float(original["bar_vwap"])
+        if not math.isfinite(bar_vwap) or bar_vwap <= 0:
+            raise ValueError("bar_vwap must be finite and positive")
+        if not prices["low"] <= bar_vwap <= prices["high"]:
+            raise ValueError("bar_vwap must lie within bar low/high")
+        validated["bar_vwap"] = bar_vwap
+    for name in ("half_spread_bps", "fee_per_share"):
+        if name in original:
+            value = float(original[name])
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and non-negative")
+            validated[name] = value
+    return validated
 
 
-def load_dataset(path: str | Path = DEFAULT_DATA_PATH) -> dict[str, Any]:
-    """Load the trusted local pickle and validate its schema and records."""
-    with Path(path).open("rb") as handle:
-        payload = pickle.load(handle)  # nosec B301: repository-owned local fixture
+def load_dataset(
+    path: str | Path = DEFAULT_DATA_PATH,
+    *,
+    allow_unsafe_pickle: bool = False,
+) -> dict[str, Any]:
+    """Load JSON or the repository-owned pickle, then validate every record.
+
+    Pickle can execute code during deserialization.  A pickle outside the
+    checked-in default fixture is therefore rejected unless the caller opts in
+    with ``allow_unsafe_pickle=True``.
+    """
+    dataset_path = Path(path)
+    if dataset_path.suffix.lower() == ".json":
+        payload = json.loads(dataset_path.read_text(encoding="utf-8"))
+    elif dataset_path.suffix.lower() in {".pkl", ".pickle"}:
+        is_bundled_fixture = dataset_path.resolve() == DEFAULT_DATA_PATH.resolve()
+        if not is_bundled_fixture and not allow_unsafe_pickle:
+            raise ValueError(
+                "refusing to load an untrusted pickle; use JSON or pass "
+                "allow_unsafe_pickle=True only for a trusted file"
+            )
+        with dataset_path.open("rb") as handle:
+            payload = pickle.load(handle)  # nosec B301: explicit trust boundary above
+    else:
+        raise ValueError("dataset must be a .json, .pkl, or .pickle file")
     if not isinstance(payload, dict) or payload.get("schema_version") != 1:
         raise ValueError("unsupported dataset schema")
     raw_records = payload.get("records")
@@ -275,6 +321,8 @@ def split_train_test(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[st
 def build_volume_profile(
     training_records: Sequence[Mapping[str, Any]],
     target_records: Sequence[Mapping[str, Any]],
+    *,
+    min_training_sessions: int = 1,
 ) -> list[float]:
     """Estimate median historical volume share for each target time slot."""
     training = [_validated_record(record) for record in training_records]
@@ -285,6 +333,19 @@ def build_volume_profile(
     by_session: dict[str, list[dict[str, Any]]] = {}
     for record in training:
         by_session.setdefault(record["session"], []).append(record)
+    if len(by_session) < min_training_sessions:
+        raise ValueError(
+            f"volume profile requires at least {min_training_sessions} training sessions"
+        )
+
+    target_slots = {record["slot"] for record in target}
+    for session, bars in by_session.items():
+        observed_slots = {record["slot"] for record in bars}
+        missing_slots = sorted(target_slots - observed_slots)
+        if missing_slots:
+            preview = ", ".join(missing_slots[:5])
+            suffix = "..." if len(missing_slots) > 5 else ""
+            raise ValueError(f"training session {session} is missing target slots: {preview}{suffix}")
 
     shares_by_slot: dict[str, list[float]] = {}
     for bars in by_session.values():
@@ -293,13 +354,16 @@ def build_volume_profile(
             continue
         for record in bars:
             shares_by_slot.setdefault(record["slot"], []).append(record["volume"] / total_volume)
-    weights = [median(shares_by_slot.get(record["slot"], [0.0])) for record in target]
+    weights = [median(shares_by_slot[record["slot"]]) for record in target]
     if sum(weights) <= 0:
         raise ValueError("historical records do not cover target time slots")
     return [weight / sum(weights) for weight in weights]
 
 
-def _typical_price(bar: Mapping[str, Any]) -> float:
+def _bar_reference_price(bar: Mapping[str, Any]) -> float:
+    """Prefer observed bar VWAP when supplied, otherwise fall back to HLC/3."""
+    if "bar_vwap" in bar:
+        return float(bar["bar_vwap"])
     return (float(bar["high"]) + float(bar["low"]) + float(bar["close"])) / 3.0
 
 
@@ -334,12 +398,14 @@ def simulate_execution(
         carry -= quantity
         executed += quantity
 
-        reference = _typical_price(bar)
+        reference = _bar_reference_price(bar)
         participation = quantity / volume if volume > 0 else 0.0
         impact_bps = config.impact_coefficient_bps * math.sqrt(participation)
-        adverse_move = (config.half_spread_bps + impact_bps) / 10_000.0
+        half_spread_bps = float(bar.get("half_spread_bps", config.half_spread_bps))
+        fee_per_share = float(bar.get("fee_per_share", config.fee_per_share))
+        adverse_move = (half_spread_bps + impact_bps) / 10_000.0
         fill_price = reference * (1 + side.sign * adverse_move)
-        spread_cost = quantity * reference * config.half_spread_bps / 10_000.0
+        spread_cost = quantity * reference * half_spread_bps / 10_000.0
         impact_cost = quantity * reference * impact_bps / 10_000.0
         fills.append(
             Fill(
@@ -352,7 +418,7 @@ def simulate_execution(
                 fill_price=fill_price,
                 spread_cost=spread_cost,
                 impact_cost=impact_cost,
-                fees=quantity * config.fee_per_share,
+                fees=quantity * fee_per_share,
             )
         )
 
@@ -364,12 +430,15 @@ def simulate_execution(
     market_volume = sum(float(bar["volume"]) for bar in bars)
     if market_volume <= 0:
         raise ValueError("test session has zero market volume")
-    market_vwap = sum(_typical_price(bar) * float(bar["volume"]) for bar in bars) / market_volume
+    market_vwap = sum(_bar_reference_price(bar) * float(bar["volume"]) for bar in bars) / market_volume
     arrival = float(bars[0]["open"])
     fees = sum(fill.fees for fill in fills)
-    fee_bps = fees / (arrival * executed) * 10_000.0
-    arrival_shortfall = side.sign * (average_price - arrival) / arrival * 10_000.0 + fee_bps
-    vwap_slippage = side.sign * (average_price - market_vwap) / market_vwap * 10_000.0 + fee_bps
+    arrival_price_shortfall = side.sign * (average_price - arrival) / arrival * 10_000.0
+    vwap_price_slippage = side.sign * (average_price - market_vwap) / market_vwap * 10_000.0
+    arrival_fee_bps = fees / (arrival * executed) * 10_000.0
+    vwap_fee_bps = fees / (market_vwap * executed) * 10_000.0
+    arrival_shortfall = arrival_price_shortfall + arrival_fee_bps
+    vwap_slippage = vwap_price_slippage + vwap_fee_bps
     spread_cost = sum(fill.spread_cost for fill in fills)
     impact_cost = sum(fill.impact_cost for fill in fills)
 
@@ -385,6 +454,8 @@ def simulate_execution(
         average_execution_price=average_price,
         arrival_price=arrival,
         market_vwap=market_vwap,
+        arrival_price_shortfall_bps=arrival_price_shortfall,
+        vwap_price_slippage_bps=vwap_price_slippage,
         arrival_shortfall_bps=arrival_shortfall,
         vwap_slippage_bps=vwap_slippage,
         spread_cost=spread_cost,
@@ -430,9 +501,12 @@ def write_results(
     payload = {
         "methodology": {
             "train_test": "all prior sessions train; final session test",
-            "bar_reference_price": "(high + low + close) / 3",
+            "bar_reference_price": "bar_vwap when supplied; otherwise (high + low + close) / 3",
             "market_benchmark": "volume-weighted bar reference price",
+            "pov_information_set": "one-bar-lagged market volume (bar-causal)",
             "impact_bps": "impact_coefficient_bps * sqrt(child_qty / bar_volume)",
+            "net_metrics": "arrival_shortfall_bps and vwap_slippage_bps include explicit fees",
+            "gross_price_metrics": "arrival_price_shortfall_bps and vwap_price_slippage_bps exclude fees",
             "lower_slippage_is_better": True,
         },
         "dataset_metadata": dataset.get("metadata", {}),
@@ -468,6 +542,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--half-spread-bps", type=float, default=0.50)
     parser.add_argument("--impact-bps", type=float, default=10.0)
     parser.add_argument("--fee-per-share", type=float, default=0.0035)
+    parser.add_argument(
+        "--allow-unsafe-pickle",
+        action="store_true",
+        help="allow loading a non-bundled pickle only when the file is trusted",
+    )
     return parser.parse_args()
 
 
@@ -482,7 +561,7 @@ def main() -> int:
         impact_coefficient_bps=args.impact_bps,
         fee_per_share=args.fee_per_share,
     )
-    dataset = load_dataset(args.data)
+    dataset = load_dataset(args.data, allow_unsafe_pickle=args.allow_unsafe_pickle)
     results = run_backtest(dataset, config)
     write_results(results, dataset, config, args.results)
     _print_results(results)

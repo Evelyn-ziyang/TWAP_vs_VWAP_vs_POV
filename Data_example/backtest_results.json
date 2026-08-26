@@ -1,9 +1,12 @@
 {
   "methodology": {
     "train_test": "all prior sessions train; final session test",
-    "bar_reference_price": "(high + low + close) / 3",
+    "bar_reference_price": "bar_vwap when supplied; otherwise (high + low + close) / 3",
     "market_benchmark": "volume-weighted bar reference price",
+    "pov_information_set": "one-bar-lagged market volume (bar-causal)",
     "impact_bps": "impact_coefficient_bps * sqrt(child_qty / bar_volume)",
+    "net_metrics": "arrival_shortfall_bps and vwap_slippage_bps include explicit fees",
+    "gross_price_metrics": "arrival_price_shortfall_bps and vwap_price_slippage_bps exclude fees",
     "lower_slippage_is_better": true
   },
   "dataset_metadata": {
@@ -47,8 +50,10 @@
       "average_execution_price": 302.5568274711117,
       "arrival_price": 333.5499999999997,
       "market_vwap": 303.09514205643575,
+      "arrival_price_shortfall_bps": -929.1912015856104,
+      "vwap_price_slippage_bps": -17.760581105710944,
       "arrival_shortfall_bps": -929.0862697912768,
-      "vwap_slippage_bps": -17.65564931137726,
+      "vwap_slippage_bps": -17.64510581381899,
       "spread_cost": 75.61472066666661,
       "impact_cost": 414.10930155997306,
       "fees": 17.50000000000001,
@@ -66,8 +71,10 @@
       "average_execution_price": 302.75936851210236,
       "arrival_price": 333.5499999999997,
       "market_vwap": 303.09514205643575,
+      "arrival_price_shortfall_bps": -923.1189173406506,
+      "vwap_price_slippage_bps": -11.078156583284064,
       "arrival_shortfall_bps": -923.0139855463169,
-      "vwap_slippage_bps": -10.97322478895038,
+      "vwap_slippage_bps": -10.96268129139211,
       "spread_cost": 75.66668983333327,
       "impact_cost": 387.3792040134868,
       "fees": 17.5,
@@ -82,15 +89,17 @@
       "remaining_qty": 0,
       "completion_rate": 1.0,
       "child_orders": 34,
-      "average_execution_price": 303.07521298192546,
+      "average_execution_price": 302.46962848131915,
       "arrival_price": 333.5499999999997,
       "market_vwap": 303.09514205643575,
-      "arrival_shortfall_bps": -913.544806418057,
-      "vwap_slippage_bps": -0.5525869760125728,
-      "spread_cost": 75.74115599999996,
-      "impact_cost": 477.20375362869686,
+      "arrival_price_shortfall_bps": -931.8054720036158,
+      "vwap_price_slippage_bps": -20.6375321911339,
+      "arrival_shortfall_bps": -931.7005402092822,
+      "vwap_slippage_bps": -20.522056899241946,
+      "spread_cost": 75.58908883333326,
+      "impact_cost": 490.776651096582,
       "fees": 17.500000000000004,
-      "total_modelled_cost": 570.4449096286968
+      "total_modelled_cost": 583.8657399299152
     }
   }
 }

@@ -61,14 +61,18 @@ def test_schedule_input_validation() -> None:
     with pytest.raises(ValueError):
         pov(100, [math.nan], 0.1)
     with pytest.raises(ValueError):
+        pov(100, [100], 0.1, lag_bars=-1)
+    with pytest.raises(ValueError):
         ExecutionConfig(total_qty=0).validated()
 
 
 def test_pov_respects_volume_cap_and_can_leave_residual() -> None:
-    assert pov(100, [100, 50], 0.10) == [10, 5]
-    assert pov(150, [1_000, 1_000, 1_000], 0.10) == [100, 50, 0]
+    assert pov(100, [100, 50], 0.10) == [0, 10]
+    assert pov(150, [1_000, 1_000, 1_000], 0.10) == [0, 100, 50]
+    assert pov(100, [100, 50], 0.10, lag_bars=0) == [10, 5]
     schedule = pov(1_000, [101, 202, 303], 0.10)
-    assert all(qty <= math.floor(volume * 0.10) for qty, volume in zip(schedule, [101, 202, 303]))
+    decision_volumes = [0, 101, 202]
+    assert all(qty <= math.floor(volume * 0.10) for qty, volume in zip(schedule, decision_volumes))
     assert sum(schedule) < 1_000
 
 
@@ -86,6 +90,45 @@ def test_volume_profile_is_median_of_daily_normalized_shares() -> None:
     profile = build_volume_profile(training, target)
     assert profile == pytest.approx([0.375, 0.625])
     assert sum(profile) == pytest.approx(1.0)
+
+
+def test_volume_profile_rejects_missing_slots_and_too_little_history() -> None:
+    first = datetime(2026, 7, 27, 13, 30, tzinfo=timezone.utc)
+    training = [make_bar(first, 10)]
+    target = [make_bar(first + timedelta(days=1), 1)]
+    with pytest.raises(ValueError, match="at least 2 training sessions"):
+        build_volume_profile(training, target, min_training_sessions=2)
+
+    target_with_extra_slot = [
+        make_bar(first + timedelta(days=1), 1),
+        make_bar(first + timedelta(days=1, minutes=5), 1),
+    ]
+    with pytest.raises(ValueError, match="missing target slots"):
+        build_volume_profile(training, target_with_extra_slot)
+
+
+def test_fill_metrics_separate_gross_price_and_fees_and_prefer_bar_vwap() -> None:
+    start = datetime(2026, 7, 31, 13, 30, tzinfo=timezone.utc)
+    bar = make_bar(start, 1_000, price=100.0)
+    bar.update({"bar_vwap": 100.5, "half_spread_bps": 2.0, "fee_per_share": 0.01})
+    result = simulate_execution(
+        "TWAP",
+        [100],
+        [bar],
+        ExecutionConfig(total_qty=100, impact_coefficient_bps=0.0),
+    )
+    assert result.fills[0].reference_price == pytest.approx(100.5)
+    assert result.arrival_shortfall_bps > result.arrival_price_shortfall_bps
+    assert result.vwap_slippage_bps > result.vwap_price_slippage_bps
+
+
+def test_external_pickle_requires_explicit_trust(tmp_path: Path) -> None:
+    external = tmp_path / "external.pkl"
+    external.write_bytes((ROOT / "Data_example" / "example.pkl").read_bytes())
+    with pytest.raises(ValueError, match="untrusted pickle"):
+        load_dataset(external)
+    trusted = load_dataset(external, allow_unsafe_pickle=True)
+    assert trusted["records"]
 
 
 def test_fill_model_is_side_aware_and_rolls_liquidity_forward() -> None:

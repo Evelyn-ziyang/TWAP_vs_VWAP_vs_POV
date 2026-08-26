@@ -90,10 +90,10 @@
 <rect x="1198.06" y="851.38" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <rect x="1409.08" y="847.67" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <rect x="1497.00" y="801.26" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
-<polyline points="148.00,617.85 165.58,654.98 183.17,701.38 200.75,687.46 218.34,721.80 235.92,726.44 253.51,729.23 271.09,704.17 288.68,721.80 306.26,750.57 323.84,745.93 341.43,770.99 359.01,757.07 376.60,783.06 394.18,782.13 411.77,802.55 429.35,812.76 446.94,795.12 464.52,809.97 482.10,813.68 499.69,796.05 517.27,758.00 534.86,773.77 552.44,738.51 570.03,773.77 587.61,776.56 605.19,783.98 622.78,796.98 640.36,790.48 657.95,800.69 675.53,802.55 693.12,828.53 710.70,837.82 728.29,812.76 745.87,900.00 763.45,900.00 781.04,900.00 798.62,900.00 816.21,900.00 833.79,900.00 851.38,900.00 868.96,900.00 886.55,900.00 904.13,900.00 921.71,900.00 939.30,900.00 956.88,900.00 974.47,900.00 992.05,900.00 1009.64,900.00 1027.22,900.00 1044.81,900.00 1062.39,900.00 1079.97,900.00 1097.56,900.00 1115.14,900.00 1132.73,900.00 1150.31,900.00 1167.90,900.00 1185.48,900.00 1203.06,900.00 1220.65,900.00 1238.23,900.00 1255.82,900.00 1273.40,900.00 1290.99,900.00 1308.57,900.00 1326.16,900.00 1343.74,900.00 1361.32,900.00 1378.91,900.00 1396.49,900.00 1414.08,900.00 1431.66,900.00 1449.25,900.00 1466.83,900.00 1484.42,900.00 1502.00,900.00" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<polygon points="148.00,611.85 142.00,622.85 154.00,622.85" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
-<polygon points="359.01,751.07 353.01,762.07 365.01,762.07" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
-<polygon points="570.03,767.77 564.03,778.77 576.03,778.77" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polyline points="148.00,900.00 165.58,617.85 183.17,654.98 200.75,701.38 218.34,687.46 235.92,721.80 253.51,726.44 271.09,729.23 288.68,704.17 306.26,721.80 323.84,750.57 341.43,745.93 359.01,770.99 376.60,757.07 394.18,783.06 411.77,782.13 429.35,802.55 446.94,812.76 464.52,795.12 482.10,809.97 499.69,813.68 517.27,796.05 534.86,758.00 552.44,773.77 570.03,738.51 587.61,773.77 605.19,776.56 622.78,783.98 640.36,796.98 657.95,790.48 675.53,800.69 693.12,802.55 710.70,828.53 728.29,837.82 745.87,812.76 763.45,900.00 781.04,900.00 798.62,900.00 816.21,900.00 833.79,900.00 851.38,900.00 868.96,900.00 886.55,900.00 904.13,900.00 921.71,900.00 939.30,900.00 956.88,900.00 974.47,900.00 992.05,900.00 1009.64,900.00 1027.22,900.00 1044.81,900.00 1062.39,900.00 1079.97,900.00 1097.56,900.00 1115.14,900.00 1132.73,900.00 1150.31,900.00 1167.90,900.00 1185.48,900.00 1203.06,900.00 1220.65,900.00 1238.23,900.00 1255.82,900.00 1273.40,900.00 1290.99,900.00 1308.57,900.00 1326.16,900.00 1343.74,900.00 1361.32,900.00 1378.91,900.00 1396.49,900.00 1414.08,900.00 1431.66,900.00 1449.25,900.00 1466.83,900.00 1484.42,900.00 1502.00,900.00" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="148.00,894.00 142.00,905.00 154.00,905.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polygon points="359.01,764.99 353.01,775.99 365.01,775.99" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polygon points="570.03,732.51 564.03,743.51 576.03,743.51" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="781.04,894.00 775.04,905.00 787.04,905.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="992.05,894.00 986.05,905.00 998.05,905.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="1203.06,894.00 1197.06,905.00 1209.06,905.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
@@ -158,10 +158,10 @@
 <rect x="1198.06" y="1103.28" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <rect x="1409.08" y="1070.19" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <rect x="1497.00" y="1052.14" width="10" height="10" rx="1" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
-<polyline points="148.00,1322.80 165.58,1307.87 183.17,1295.76 200.75,1282.81 218.34,1271.94 235.92,1261.37 253.51,1250.96 271.09,1239.02 288.68,1228.16 306.26,1219.05 323.84,1209.66 341.43,1201.80 359.01,1193.08 376.60,1185.96 394.18,1178.77 411.77,1172.83 429.35,1167.51 446.94,1161.12 464.52,1155.63 482.10,1150.37 499.69,1144.04 517.27,1135.38 534.86,1127.69 552.44,1117.84 570.03,1110.15 587.61,1102.63 605.19,1095.55 622.78,1089.28 640.36,1082.60 657.95,1076.55 675.53,1070.61 693.12,1066.25 710.70,1062.46 728.29,1057.14 745.87,1057.14 763.45,1057.14 781.04,1057.14 798.62,1057.14 816.21,1057.14 833.79,1057.14 851.38,1057.14 868.96,1057.14 886.55,1057.14 904.13,1057.14 921.71,1057.14 939.30,1057.14 956.88,1057.14 974.47,1057.14 992.05,1057.14 1009.64,1057.14 1027.22,1057.14 1044.81,1057.14 1062.39,1057.14 1079.97,1057.14 1097.56,1057.14 1115.14,1057.14 1132.73,1057.14 1150.31,1057.14 1167.90,1057.14 1185.48,1057.14 1203.06,1057.14 1220.65,1057.14 1238.23,1057.14 1255.82,1057.14 1273.40,1057.14 1290.99,1057.14 1308.57,1057.14 1326.16,1057.14 1343.74,1057.14 1361.32,1057.14 1378.91,1057.14 1396.49,1057.14 1414.08,1057.14 1431.66,1057.14 1449.25,1057.14 1466.83,1057.14 1484.42,1057.14 1502.00,1057.14" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<polygon points="148.00,1316.80 142.00,1327.80 154.00,1327.80" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
-<polygon points="359.01,1187.08 353.01,1198.08 365.01,1198.08" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
-<polygon points="570.03,1104.15 564.03,1115.15 576.03,1115.15" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polyline points="148.00,1340.00 165.58,1322.80 183.17,1307.87 200.75,1295.76 218.34,1282.81 235.92,1271.94 253.51,1261.37 271.09,1250.96 288.68,1239.02 306.26,1228.16 323.84,1219.05 341.43,1209.66 359.01,1201.80 376.60,1193.08 394.18,1185.96 411.77,1178.77 429.35,1172.83 446.94,1167.51 464.52,1161.12 482.10,1155.63 499.69,1150.37 517.27,1144.04 534.86,1135.38 552.44,1127.69 570.03,1117.84 587.61,1110.15 605.19,1102.63 622.78,1095.55 640.36,1089.28 657.95,1082.60 675.53,1076.55 693.12,1070.61 710.70,1066.25 728.29,1062.46 745.87,1057.14 763.45,1057.14 781.04,1057.14 798.62,1057.14 816.21,1057.14 833.79,1057.14 851.38,1057.14 868.96,1057.14 886.55,1057.14 904.13,1057.14 921.71,1057.14 939.30,1057.14 956.88,1057.14 974.47,1057.14 992.05,1057.14 1009.64,1057.14 1027.22,1057.14 1044.81,1057.14 1062.39,1057.14 1079.97,1057.14 1097.56,1057.14 1115.14,1057.14 1132.73,1057.14 1150.31,1057.14 1167.90,1057.14 1185.48,1057.14 1203.06,1057.14 1220.65,1057.14 1238.23,1057.14 1255.82,1057.14 1273.40,1057.14 1290.99,1057.14 1308.57,1057.14 1326.16,1057.14 1343.74,1057.14 1361.32,1057.14 1378.91,1057.14 1396.49,1057.14 1414.08,1057.14 1431.66,1057.14 1449.25,1057.14 1466.83,1057.14 1484.42,1057.14 1502.00,1057.14" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="148.00,1334.00 142.00,1345.00 154.00,1345.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polygon points="359.01,1195.80 353.01,1206.80 365.01,1206.80" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
+<polygon points="570.03,1111.84 564.03,1122.84 576.03,1122.84" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="781.04,1051.14 775.04,1062.14 787.04,1062.14" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="992.05,1051.14 986.05,1062.14 998.05,1062.14" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
 <polygon points="1203.06,1051.14 1197.06,1062.14 1209.06,1062.14" fill="#54A24B" stroke="#FFFFFF" stroke-width="2"/>
@@ -180,22 +180,22 @@
 <text x="372" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">100.0%</text>
 <text x="592" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">78</text>
 <text x="802" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">302.5568</text>
-<text x="1052" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-17.66 bps</text>
+<text x="1052" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-17.65 bps</text>
 <text x="1312" y="1582" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">507.22</text>
 <rect x="70" y="1613" width="1460" height="76" fill="#F8FAFB"/>
 <text x="82" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" text-anchor="start">Forecast VWAP</text>
 <text x="372" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">100.0%</text>
 <text x="592" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">78</text>
 <text x="802" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">302.7594</text>
-<text x="1052" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-10.97 bps</text>
+<text x="1052" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-10.96 bps</text>
 <text x="1312" y="1658" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">480.55</text>
 <rect x="70" y="1689" width="1460" height="76" fill="#FFFFFF"/>
 <text x="82" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" text-anchor="start">POV</text>
 <text x="372" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">100.0%</text>
 <text x="592" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">34</text>
-<text x="802" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">303.0752</text>
-<text x="1052" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-0.55 bps</text>
-<text x="1312" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">570.44</text>
+<text x="802" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">302.4696</text>
+<text x="1052" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">-20.52 bps</text>
+<text x="1312" y="1734" fill="#263238" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" text-anchor="start">583.87</text>
 <line x1="70" y1="1475" x2="1530" y2="1475" stroke="#E2E7EA" stroke-width="2"/>
 <line x1="70" y1="1537" x2="1530" y2="1537" stroke="#E2E7EA" stroke-width="2"/>
 <line x1="70" y1="1613" x2="1530" y2="1613" stroke="#E2E7EA" stroke-width="2"/>

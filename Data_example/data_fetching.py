@@ -26,7 +26,9 @@ import json
 import math
 from pathlib import Path
 import pickle
+import time as time_module
 from typing import Any, Iterable
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
@@ -84,8 +86,16 @@ def read_csv_records(path: Path) -> list[dict[str, Any]]:
     return records
 
 
-def download_yahoo(symbol: str, interval: str, range_: str = "1mo") -> tuple[list[dict[str, Any]], str]:
+def download_yahoo(
+    symbol: str,
+    interval: str,
+    range_: str = "1mo",
+    *,
+    retries: int = 3,
+) -> tuple[list[dict[str, Any]], str]:
     """Fetch OHLCV bars from Yahoo's public chart endpoint."""
+    if retries <= 0:
+        raise ValueError("retries must be positive")
     query = urlencode(
         {
             "range": range_,
@@ -96,8 +106,17 @@ def download_yahoo(symbol: str, interval: str, range_: str = "1mo") -> tuple[lis
     )
     url = f"{YAHOO_CHART_URL.format(symbol=symbol)}?{query}"
     request = Request(url, headers={"User-Agent": "Mozilla/5.0 execution-research-demo"})
-    with urlopen(request, timeout=30) as response:
-        payload = json.load(response)
+    payload: dict[str, Any] | None = None
+    for attempt in range(retries):
+        try:
+            with urlopen(request, timeout=30) as response:
+                payload = json.load(response)
+            break
+        except (HTTPError, URLError, TimeoutError, json.JSONDecodeError):
+            if attempt + 1 == retries:
+                raise
+            time_module.sleep(2**attempt)
+    assert payload is not None
 
     chart = payload.get("chart", {})
     if chart.get("error"):
@@ -212,6 +231,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--symbol", default="AAPL")
     parser.add_argument("--interval", default="5m", choices=sorted(INTERVAL_MINUTES))
     parser.add_argument("--range", dest="range_", default="1mo", help="Yahoo lookback range")
+    parser.add_argument("--retries", type=int, default=3, help="download attempts with exponential backoff")
     parser.add_argument("--sessions", type=int, default=6, help="latest usable sessions to retain")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument(
@@ -230,7 +250,12 @@ def main() -> int:
         provider = "public-csv-cache"
         source_url = args.source_url or str(args.input_csv)
     else:
-        records, source_url = download_yahoo(args.symbol, args.interval, args.range_)
+        records, source_url = download_yahoo(
+            args.symbol,
+            args.interval,
+            args.range_,
+            retries=args.retries,
+        )
         provider = "Yahoo Finance chart API"
 
     dataset = build_dataset(

@@ -45,8 +45,8 @@ POV_COLOR = "#54A24B"
 SERIES_COLORS = {"TWAP": TWAP_COLOR, "Forecast VWAP": VWAP_COLOR, "POV": POV_COLOR}
 
 
-def _font_path(bold: bool = False) -> str:
-    candidates = (
+def _font_candidates(bold: bool = False) -> tuple[str, ...]:
+    system_candidates = (
         [
             "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
             "/Library/Fonts/Arial Bold.ttf",
@@ -59,14 +59,21 @@ def _font_path(bold: bool = False) -> str:
             "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         ]
     )
-    for candidate in candidates:
-        if Path(candidate).exists():
-            return candidate
-    raise FileNotFoundError("No suitable TrueType font found")
+    # Pillow commonly bundles DejaVu; the filename lookup is portable across
+    # Windows, macOS, and Linux even when no system font path above exists.
+    bundled_name = "DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf"
+    return (bundled_name, *system_candidates)
 
 
-def font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(_font_path(bold), size=size)
+def font(size: int, *, bold: bool = False) -> ImageFont.ImageFont:
+    for candidate in _font_candidates(bold):
+        try:
+            return ImageFont.truetype(candidate, size=size)
+        except OSError:
+            continue
+    # A missing presentation font should not make importing the algorithm or
+    # collecting tests fail.  The bitmap fallback is less attractive but safe.
+    return ImageFont.load_default()
 
 
 FONTS = {

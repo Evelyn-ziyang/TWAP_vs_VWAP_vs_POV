@@ -79,16 +79,16 @@
 <line x1="140.00" y1="910.00" x2="1540.00" y2="910.00" stroke="#66727A" stroke-width="2" stroke-linecap="round"/>
 <rect x="156.33" y="861.29" width="26.00" height="48.71" fill="#4C78A8"/>
 <rect x="184.33" y="864.43" width="26.00" height="45.57" fill="#F58518"/>
-<rect x="212.33" y="671.14" width="26.00" height="238.86" fill="#54A24B"/>
+<rect x="212.33" y="910.00" width="26.00" height="0.00" fill="#54A24B"/>
 <rect x="273.00" y="861.29" width="26.00" height="48.71" fill="#4C78A8"/>
 <rect x="301.00" y="866.79" width="26.00" height="43.21" fill="#F58518"/>
-<rect x="329.00" y="702.57" width="26.00" height="207.43" fill="#54A24B"/>
+<rect x="329.00" y="671.14" width="26.00" height="238.86" fill="#54A24B"/>
 <rect x="389.67" y="862.07" width="26.00" height="47.93" fill="#4C78A8"/>
 <rect x="417.67" y="864.43" width="26.00" height="45.57" fill="#F58518"/>
-<rect x="445.67" y="779.57" width="26.00" height="130.43" fill="#54A24B"/>
+<rect x="445.67" y="702.57" width="26.00" height="207.43" fill="#54A24B"/>
 <rect x="506.33" y="862.07" width="26.00" height="47.93" fill="#4C78A8"/>
 <rect x="534.33" y="860.50" width="26.00" height="49.50" fill="#F58518"/>
-<rect x="562.33" y="910.00" width="26.00" height="0.00" fill="#54A24B"/>
+<rect x="562.33" y="779.57" width="26.00" height="130.43" fill="#54A24B"/>
 <rect x="623.00" y="862.07" width="26.00" height="47.93" fill="#4C78A8"/>
 <rect x="651.00" y="856.57" width="26.00" height="53.43" fill="#F58518"/>
 <rect x="679.00" y="910.00" width="26.00" height="0.00" fill="#54A24B"/>
@@ -167,8 +167,8 @@
 <rect x="1280.45" y="1088.09" width="10.00" height="10.00" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <rect x="1535.00" y="1045.00" width="10.00" height="10.00" fill="#F58518" stroke="#FFFFFF" stroke-width="2"/>
 <text x="1532.00" y="1032.00" fill="#263238" font-family="Arial, sans-serif" font-size="17" font-weight="700" text-anchor="end" dominant-baseline="text-after-edge">100.0%</text>
-<polyline points="140.00,1211.10 267.27,1112.19 394.55,1050.00 521.82,1050.00 649.09,1050.00 776.36,1050.00 903.64,1050.00 1030.91,1050.00 1158.18,1050.00 1285.45,1050.00 1412.73,1050.00 1540.00,1050.00" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<polygon points="140.00,1205.10 134.00,1216.10 146.00,1216.10" fill="#54A24B" stroke="#FFFFFF" stroke-width="1"/>
+<polyline points="140.00,1325.00 267.27,1211.10 394.55,1112.19 521.82,1050.00 649.09,1050.00 776.36,1050.00 903.64,1050.00 1030.91,1050.00 1158.18,1050.00 1285.45,1050.00 1412.73,1050.00 1540.00,1050.00" fill="none" stroke="#54A24B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="140.00,1319.00 134.00,1330.00 146.00,1330.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="1"/>
 <polygon points="521.82,1044.00 515.82,1055.00 527.82,1055.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="1"/>
 <polygon points="903.64,1044.00 897.64,1055.00 909.64,1055.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="1"/>
 <polygon points="1285.45,1044.00 1279.45,1055.00 1291.45,1055.00" fill="#54A24B" stroke="#FFFFFF" stroke-width="1"/>
